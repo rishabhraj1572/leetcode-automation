@@ -1,0 +1,24 @@
+function parseCode(code) {
+
+  if (code.indexOf('[C++]') > -1) {
+    const start = code.indexOf('[C++]') + '[C++]'.length
+
+    let end = null;
+    if (code.indexOf("[/C++]") > -1) {
+        end = code.indexOf("[/C++]")
+    }
+
+    return (end) ? code.slice(start, end) : code.slice(start);
+  } else {
+    const codeblock = /```\s*([^]+?.*?[^]+?[^]+?)```/g;
+    const match =  codeblock.exec(code)
+    if (match) {
+    return match[1]
+    } else {
+    return code
+    }
+  }
+}
+
+let parsedSourceCode = parseCode("abcdefg")
+window.monaco.editor.getModels()[0].setValue(parsedSourceCode)
