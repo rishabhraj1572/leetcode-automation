@@ -1,22 +1,62 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 import time
 import pyautogui
 import requests
+from cookies import *
 
 # question_link="https://leetcode.com/problems/merge-two-sorted-lists"
 # question_link=input("Enter Question Link : ")
+
+def login():
+    LOGIN_EMAIL = "LEETCODE_EMAIL"
+    LOGIN_PASSWORD = "LEETCODE_PASS"
+    LOGIN_URL = "https://leetcode.com/accounts/login/"
+    chrome_options = Options()
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    try:
+        driver.get(LOGIN_URL)
+        
+        wait = WebDriverWait(driver, 10)
+        email_input = wait.until(EC.presence_of_element_located((By.ID, "id_login")))
+        
+        email_input.clear()
+        email_input.send_keys(LOGIN_EMAIL)
+
+        password_input = wait.until(EC.presence_of_element_located((By.ID, "id_password")))
+        password_input.clear()
+        password_input.send_keys(LOGIN_PASSWORD)
+
+        password_input.send_keys(Keys.RETURN)
+
+        time.sleep(5)
+
+        if "https://leetcode.com/" in driver.current_url:
+            print("Login successful!")
+            cookies = driver.get_cookies()
+            with open("cookies.txt", "w") as file:
+                for cookie in cookies:
+                    file.write(f"{cookie['name']} = {cookie['value']}\n")
+            print("Cookies have been saved to cookies.txt.")
+            get_questions()
+        else:
+            print("Login failed. Please check your credentials or the login process.")
+    finally:
+        driver.quit()
 
 def get_questions():    
     import requests
     url = "https://leetcode.com/graphql/"
     headers = {
         "Content-Type": "application/json",
-        "cookie":'YOUR_COOKIE_VALUE',
+        "cookie":f'{get_cookies_content_with_semicolon("cookies.txt")}',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
     }
 
@@ -76,13 +116,9 @@ def get_questions():
                 break
 
 def solve(question_link):
-    cookies = {
-        #YOUR COOKIES VALUE
-        #value1:key1,
-        #value2:key2
-    }
+    cookies = parse_cookies_from_file('cookies.txt')
 
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
     driver.get(question_link)
     for name, value in cookies.items():
@@ -160,4 +196,5 @@ def solve(question_link):
 
     time.sleep(20)
 
-get_questions()
+
+login()
