@@ -138,7 +138,7 @@ def solve(question_link):
         matches = re.findall(pattern, text, re.DOTALL)
         if matches:
             code = matches[0].strip()
-            return code
+            return code+"\n\n//solved by leetcode-automation tool (https://github.com/rishabhraj1572/leetcode-automation)"
         else:
             print('no code found')
 
