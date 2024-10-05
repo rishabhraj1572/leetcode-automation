@@ -32,3 +32,11 @@ jobs:
           pip install selenium
           pip install webdriver-manager
           pip install curl_cffi
+
+      - name: execute py script # run sj-gobierno.py to get the latest data
+        env: 
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+        run: python main.py
+
