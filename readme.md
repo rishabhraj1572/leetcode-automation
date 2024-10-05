@@ -1,1 +1,1 @@
-Add your credentials in main.py and run.
+Add your credentials in main.py and run - line 12
