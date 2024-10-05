@@ -4,3 +4,5 @@
 4) add your credentials in main.py and run - line 12
 5) run - python main.py
 
+For number of questions check line 115 in main.py
+
