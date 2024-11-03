@@ -4,3 +4,5 @@ g4f
 selenium
 webdriver-manager
 curl_cffi
+nest_asyncio
+nodriver
